@@ -13,7 +13,7 @@ from app.main import app
 # ── Direct pymongo connection for fixtures ────────────────────────────────────
 MONGO_URI       = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 _mongo_client   = MongoClient(MONGO_URI)
-test_collection = _mongo_client["company_db_test"]["employees"]
+db_collection = _mongo_client["company_db_test"]["employees"]
 
 SAMPLE_EMPLOYEES = [
     {"name": "John Doe",    "email": "john@test.com",   "role": "Engineer",  "department": "IT"},
@@ -63,7 +63,7 @@ def user_headers(http_client):
 @pytest.fixture(autouse=True)
 def reset_db():
     """Wipe and re-seed the test collection before every test."""
-    test_collection.delete_many({})
-    test_collection.insert_many([{**emp} for emp in SAMPLE_EMPLOYEES])
+    db_collection.delete_many({})
+    db_collection.insert_many([{**emp} for emp in SAMPLE_EMPLOYEES])
     yield
-    test_collection.delete_many({})
+    db_collection.delete_many({})
